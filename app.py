@@ -28,7 +28,6 @@ APARTMENT_DATA = {
     "name": "Royal Sai Homes",
     "address": "Doddathogur Panchayath Office, Doddathoguru, Electronic City Phase I, Electronic City, Bengaluru, Karnataka 560100",
     "email": "royalsaihomes@gmail.com",
-    "owner": "Sathisha Kumar",
     "description": "Premium rental apartments in the heart of Electronic City, Bengaluru. Experience comfortable living with modern amenities and excellent connectivity to IT hubs, schools, and shopping centers.",
     "features": [
         "Semi / Fully Furnished Apartments",
@@ -60,7 +59,7 @@ with col2:
 st.markdown("---")
 
 # Features Section
-st.header("🏘️ Apartment Features")
+st.header("🏘️ Apartment Facilities")
 features_cols = st.columns(2)
 for i, feature in enumerate(APARTMENT_DATA["features"]):
     with features_cols[i % 2]:
@@ -102,8 +101,6 @@ with contact_cols[0]:
 with contact_cols[2]:
     st.subheader("📧 Email")
     st.write(APARTMENT_DATA["email"])
-
-st.write(f"**Managed by:** {APARTMENT_DATA['owner']}")
 
 # Footer
 st.markdown("---")
