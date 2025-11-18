@@ -32,14 +32,13 @@ APARTMENT_DATA = {
     "owner": "Sathisha Kumar",
     "description": "Premium rental apartments in the heart of Electronic City, Bengaluru. Experience comfortable living with modern amenities and excellent connectivity to IT hubs, schools, and shopping centers.",
     "features": [
-        "Fully Furnished Apartments",
-        "24/7 Security & CCTV Surveillance",
-        "High-Speed Internet",
+        "Semi / Fully Furnished Apartments",
+        "24/7 CCTV Surveillance",
         "Power Backup",
-        "Regular Housekeeping",
-        "Modern Modular Kitchen",
-        "Laundry Facilities",
-        "Dedicated Parking Space"
+        "Common Area Cleaning",
+        "24/7 Solar & Geyser Hot Water Supply",
+        "Kitchen and Washroom",
+        "Parking Space"
     ]
 }
 
