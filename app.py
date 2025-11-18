@@ -98,10 +98,6 @@ with contact_cols[0]:
         </a>
     </div>
     """, unsafe_allow_html=True)
-    
-with contact_cols[1]:
-    st.subheader("📞 Phone")
-    st.write(APARTMENT_DATA["phone"])
 
 with contact_cols[2]:
     st.subheader("📧 Email")
