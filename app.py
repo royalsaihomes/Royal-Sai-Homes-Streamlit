@@ -34,10 +34,9 @@ APARTMENT_DATA = {
     "features": [
         "Semi / Fully Furnished Apartments",
         "24/7 CCTV Surveillance",
-        "Power Backup",
+        "UPS Power Backup",
         "Common Area Cleaning",
-        "24/7 Solar & Geyser Hot Water Supply",
-        "Kitchen and Washroom",
+        "Solar & Geyser Hot Water Supply",
         "Parking Space"
     ]
 }
