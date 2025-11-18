@@ -50,7 +50,7 @@ st.set_page_config(
 col1, col2 = st.columns([2, 1])
 with col1:
     st.title("🏠 Royal Sai Homes")
-    st.subheader("Premium Apartments in Electronic City, Bengaluru")
+    st.subheader("Premium Apartments in Electronic City Phase 1, Bengaluru")
     st.write(APARTMENT_DATA["description"])
 
 with col2:
