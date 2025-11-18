@@ -27,7 +27,6 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 APARTMENT_DATA = {
     "name": "Royal Sai Homes",
     "address": "Doddathogur Panchayath Office, Doddathoguru, Electronic City Phase I, Electronic City, Bengaluru, Karnataka 560100",
-    "phone": "7204000530",
     "email": "royalsaihomes@gmail.com",
     "owner": "Sathisha Kumar",
     "description": "Premium rental apartments in the heart of Electronic City, Bengaluru. Experience comfortable living with modern amenities and excellent connectivity to IT hubs, schools, and shopping centers.",
@@ -36,7 +35,7 @@ APARTMENT_DATA = {
         "24/7 CCTV Surveillance",
         "UPS Power Backup",
         "Common Area Cleaning",
-        "Solar & Geyser Hot Water Supply",
+        "Solar / Geyser Hot Water Supply",
         "Parking Space"
     ]
 }
