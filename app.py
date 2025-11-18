@@ -1,14 +1,27 @@
 import streamlit as st
 
-hide_default_format = """
-       <style>
-       #MainMenu {visibility: hidden; }
-       footer {visibility: hidden;}
-       .stDeployButton {display:none;}
-       </style>
-       """
-st.markdown(hide_default_format, unsafe_allow_html=True)
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stDeployButton {display:none;}
+    header {visibility: hidden;}
+    
+    /* Hide the GitHub icon */
+    .viewerBadge_container__1QSob {display: none !important;}
 
+    /* Hide streamlit branding */
+    #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 0rem;}
+    
+    /* Remove extra padding */
+    .block-container {padding-top: 1rem;}
+    
+    /* Hide any other Streamlit elements */
+    .stAppViewerBadge {display: none;}
+    [data-testid="stAppViewContainer"] > .main {background-color: transparent;}
+    </style>
+    """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # Royal Sai Homes Data
 APARTMENT_DATA = {
