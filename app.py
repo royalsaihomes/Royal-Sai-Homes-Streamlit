@@ -4,11 +4,6 @@ import streamlit as st
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 'home'
 
-# Handle page navigation from URL parameters
-query_params = st.experimental_get_query_params()
-if 'page' in query_params:
-    st.session_state.current_page = query_params['page'][0]
-
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -64,12 +59,9 @@ hide_streamlit_style = """
         border-radius: 25px;
         transition: all 0.3s;
         font-weight: 500;
+        text-decoration: none;
     }
     .nav-button:hover {
-        background: #2c5aa0;
-        color: white;
-    }
-    .nav-button.active {
         background: #2c5aa0;
         color: white;
     }
@@ -80,31 +72,25 @@ hide_streamlit_style = """
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Create navigation buttons using Streamlit
-col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+# Simple navigation using URL parameters
+st.markdown("""
+<div class="floating-nav">
+    <div class="nav-brand">🏠 Royal Sai Homes</div>
+    <div class="nav-buttons">
+        <a href="/?page=home" class="nav-button">🏠 Home</a>
+        <a href="/?page=gallery" class="nav-button">📸 Gallery</a>
+        <a href="/?page=enquiry" class="nav-button">📝 Enquiry</a>
+    </div>
+</div>
+<div class="main-content">
+""", unsafe_allow_html=True)
 
-with col1:
-    st.markdown('<div class="nav-brand">🏠 Royal Sai Homes</div>', unsafe_allow_html=True)
-
-with col2:
-    if st.button("🏠 Home", use_container_width=True):
-        st.session_state.current_page = 'home'
-        st.experimental_rerun()
-
-with col3:
-    if st.button("📸 Gallery", use_container_width=True):
-        st.session_state.current_page = 'gallery'
-        st.experimental_rerun()
-
-with col4:
-    if st.button("📝 Enquiry", use_container_width=True):
-        st.session_state.current_page = 'enquiry'
-        st.experimental_rerun()
-
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
+# Get current page from URL
+query_params = st.experimental_get_query_params()
+current_page = query_params.get('page', ['home'])[0]
 
 # Page Content based on navigation
-if st.session_state.current_page == 'home':
+if current_page == 'home':
     # Your existing homepage content
     # Royal Sai Homes Data
     APARTMENT_DATA = {
@@ -185,12 +171,12 @@ if st.session_state.current_page == 'home':
         st.subheader("📧 Email")
         st.write(APARTMENT_DATA["email"])
 
-elif st.session_state.current_page == 'gallery':
+elif current_page == 'gallery':
     st.title("📸 Gallery")
     st.write("Gallery page coming soon...")
     # You can add images here later
     
-elif st.session_state.current_page == 'enquiry':
+elif current_page == 'enquiry':
     st.title("📝 Enquiry Form")
     st.write("Enquiry form coming soon...")
     # You can add a contact form here later
