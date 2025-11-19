@@ -45,51 +45,41 @@ hide_streamlit_style = """
         font-weight: bold;
         color: #2c5aa0;
     }
-    .nav-buttons {
+    .nav-buttons-container {
         display: flex;
         gap: 15px;
-    }
-    .nav-btn {
-        background: none;
-        border: 2px solid #2c5aa0;
-        color: #2c5aa0;
-        font-size: 16px;
-        cursor: pointer;
-        padding: 8px 20px;
-        border-radius: 25px;
-        transition: all 0.3s;
-        font-weight: 500;
-        text-decoration: none;
-    }
-    .nav-btn:hover {
-        background: #2c5aa0;
-        color: white;
-    }
-    .nav-btn.active {
-        background: #2c5aa0;
-        color: white;
     }
     .main-content {
         margin-top: 80px;
     }
     
-    /* Hide the default Streamlit elements */
+    /* Style the Streamlit buttons to look like navigation */
     .stButton > button {
-        width: 100%;
+        border: 2px solid #2c5aa0 !important;
+        color: #2c5aa0 !important;
+        background: white !important;
+        border-radius: 25px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s !important;
+    }
+    .stButton > button:hover {
+        background: #2c5aa0 !important;
+        color: white !important;
+        border-color: #2c5aa0 !important;
     }
     </style>
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Navigation using Streamlit columns and buttons
+# Create the navigation bar with visible buttons
 st.markdown("""
 <div class="floating-nav">
     <div class="nav-brand">🏠 Royal Sai Homes</div>
-    <div class="nav-buttons">
+    <div class="nav-buttons-container">
 """, unsafe_allow_html=True)
 
-# Create navigation buttons
-col1, col2, col3 = st.columns(3)
+# Create navigation buttons that will be visible
+col1, col2, col3 = st.columns([1,1,1])
 with col1:
     home_clicked = st.button("🏠 Home", key="home_btn", use_container_width=True)
 with col2:
