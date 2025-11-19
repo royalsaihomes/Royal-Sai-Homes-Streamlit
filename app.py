@@ -4,6 +4,11 @@ import streamlit as st
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 'home'
 
+# Handle page navigation from URL parameters
+query_params = st.experimental_get_query_params()
+if 'page' in query_params:
+    st.session_state.current_page = query_params['page'][0]
+
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -51,17 +56,22 @@ hide_streamlit_style = """
     }
     .nav-button {
         background: none;
-        border: none;
-        color: #333;
+        border: 2px solid #2c5aa0;
+        color: #2c5aa0;
         font-size: 16px;
         cursor: pointer;
-        padding: 8px 16px;
-        border-radius: 5px;
-        transition: background 0.3s;
-        text-decoration: none;
+        padding: 8px 20px;
+        border-radius: 25px;
+        transition: all 0.3s;
+        font-weight: 500;
     }
     .nav-button:hover {
-        background: #f0f0f0;
+        background: #2c5aa0;
+        color: white;
+    }
+    .nav-button.active {
+        background: #2c5aa0;
+        color: white;
     }
     .main-content {
         margin-top: 80px;
@@ -70,23 +80,28 @@ hide_streamlit_style = """
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Floating Navigation Bar
-st.markdown("""
-<div class="floating-nav">
-    <div class="nav-brand">🏠 Royal Sai Homes</div>
-    <div class="nav-buttons">
-        <a href="/?page=home" class="nav-button">Home</a>
-        <a href="/?page=gallery" class="nav-button">Gallery</a>
-        <a href="/?page=enquiry" class="nav-button">Enquiry</a>
-    </div>
-</div>
-<div class="main-content">
-""", unsafe_allow_html=True)
+# Create navigation buttons using Streamlit
+col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
 
-# Handle page navigation from URL parameters
-query_params = st.experimental_get_query_params()
-if 'page' in query_params:
-    st.session_state.current_page = query_params['page'][0]
+with col1:
+    st.markdown('<div class="nav-brand">🏠 Royal Sai Homes</div>', unsafe_allow_html=True)
+
+with col2:
+    if st.button("🏠 Home", use_container_width=True):
+        st.session_state.current_page = 'home'
+        st.experimental_rerun()
+
+with col3:
+    if st.button("📸 Gallery", use_container_width=True):
+        st.session_state.current_page = 'gallery'
+        st.experimental_rerun()
+
+with col4:
+    if st.button("📝 Enquiry", use_container_width=True):
+        st.session_state.current_page = 'enquiry'
+        st.experimental_rerun()
+
+st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # Page Content based on navigation
 if st.session_state.current_page == 'home':
