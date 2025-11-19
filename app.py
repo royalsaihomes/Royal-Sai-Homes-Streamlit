@@ -45,34 +45,31 @@ hide_streamlit_style = """
         font-weight: bold;
         color: #2c5aa0;
     }
-    .hamburger-btn {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        color: #2c5aa0;
-        padding: 5px 10px;
+    .hamburger-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
     .main-content {
         margin-top: 80px;
     }
     
-    /* Sidebar Menu */
-    .sidebar-menu {
+    /* Menu styles */
+    .menu-container {
         position: fixed;
         top: 70px;
         right: 20px;
         background: white;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         border-radius: 8px;
-        padding: 15px;
+        padding: 10px;
         z-index: 1001;
         min-width: 150px;
     }
     .menu-item {
         display: block;
         width: 100%;
-        padding: 10px 15px;
+        padding: 12px 15px;
         background: none;
         border: none;
         text-align: left;
@@ -81,6 +78,7 @@ hide_streamlit_style = """
         color: #333;
         border-radius: 5px;
         margin-bottom: 5px;
+        transition: background 0.3s;
     }
     .menu-item:hover {
         background: #f0f0f0;
@@ -89,65 +87,41 @@ hide_streamlit_style = """
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Floating Navigation Bar with Hamburger Menu
+# Floating Navigation Bar
 st.markdown("""
 <div class="floating-nav">
     <div class="nav-brand">🏠 Royal Sai Homes</div>
-    <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
+    <div class="hamburger-container">
+""", unsafe_allow_html=True)
+
+# Hamburger button using Streamlit
+col1, col2 = st.columns([3, 1])
+with col2:
+    if st.button("☰", key="hamburger"):
+        st.session_state.menu_open = not st.session_state.menu_open
+
+st.markdown("""
+    </div>
 </div>
 <div class="main-content">
 """, unsafe_allow_html=True)
 
-# JavaScript to handle menu toggle
-st.markdown("""
-<script>
-let menuOpen = false;
-
-function toggleMenu() {
-    menuOpen = !menuOpen;
-    const menu = document.getElementById('sidebar-menu');
-    if (menu) {
-        menu.style.display = menuOpen ? 'block' : 'none';
-    }
-}
-
-function setPage(page) {
-    // Close menu
-    menuOpen = false;
-    const menu = document.getElementById('sidebar-menu');
-    if (menu) {
-        menu.style.display = 'none';
-    }
-    // Navigate to page
-    window.location.href = '/?page=' + page;
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', function(event) {
-    const menu = document.getElementById('sidebar-menu');
-    const hamburger = document.querySelector('.hamburger-btn');
-    if (menu && hamburger && !menu.contains(event.target) && !hamburger.contains(event.target)) {
-        menu.style.display = 'none';
-        menuOpen = false;
-    }
-});
-</script>
-""", unsafe_allow_html=True)
-
-# Sidebar Menu
-st.markdown("""
-<div id="sidebar-menu" class="sidebar-menu" style="display: none;">
-    <button class="menu-item" onclick="setPage('home')">🏠 Home</button>
-    <button class="menu-item" onclick="setPage('gallery')">📸 Gallery</button>
-    <button class="menu-item" onclick="setPage('enquiry')">📝 Enquiry</button>
-</div>
-""", unsafe_allow_html=True)
+# Show menu if open
+if st.session_state.menu_open:
+    st.markdown("""
+    <div class="menu-container">
+        <button class="menu-item" onclick="window.location.href='/?page=home'">🏠 Home</button>
+        <button class="menu-item" onclick="window.location.href='/?page=gallery'">📸 Gallery</button>
+        <button class="menu-item" onclick="window.location.href='/?page=enquiry'">📝 Enquiry</button>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Handle page navigation from URL parameters
 try:
     query_params = st.experimental_get_query_params()
     if 'page' in query_params:
         st.session_state.current_page = query_params['page'][0]
+        st.session_state.menu_open = False  # Close menu on navigation
 except:
     pass
 
