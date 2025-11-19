@@ -1,48 +1,30 @@
 import streamlit as st
-import pyrebase
 from datetime import datetime
 
-# === YOUR FIREBASE CONFIG ===
-firebase_config = {
-    "apiKey": "AIzaSyAPcETVnAOWJBzlnmwkgT_Mve98gWyYQwg",
-    "authDomain": "royal-sai-homes.firebaseapp.com",
-    "databaseURL": "https://royal-sai-homes-default-rtdb.firebaseio.com",
-    "projectId": "royal-sai-homes",
-    "storageBucket": "royal-sai-homes.firebasestorage.app",
-    "messagingSenderId": "713626045208",
-    "appId": "1:713626045208:web:635a0025a31b410fc6ec6d"
-}
+# Initialize session state for page navigation and enquiries storage
+if 'current_page' not in st.session_state:
+    st.session_state.current_page = 'home'
+if 'enquiries' not in st.session_state:
+    st.session_state.enquiries = []
 
-# Initialize Firebase
-try:
-    firebase = pyrebase.initialize_app(firebase_config)
-    db = firebase.database()
-    # st.success("✅ Connected to Firebase")  # Optional: remove comment to see connection status
-except Exception as e:
-    st.error(f"❌ Firebase connection failed: {e}")
-
-# Function to save enquiry to Firebase
-def save_enquiry_to_firebase(name, mobile, apartment, people):
+# Simple function to save enquiries (will work immediately)
+def save_enquiry(name, mobile, apartment, people):
     try:
         enquiry_data = {
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'name': name,
             'mobile': mobile,
             'apartment': apartment,
-            'people': people,
-            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'status': 'new'
+            'people': people
         }
+        # Save to session state (works immediately)
+        st.session_state.enquiries.append(enquiry_data)
         
-        # Save to Firebase Realtime Database
-        db.child("enquiries").push(enquiry_data)
+        # In future, you can add Google Sheets integration here
         return True
     except Exception as e:
-        st.error(f"Error saving enquiry: {str(e)}")
+        st.error(f"Error saving enquiry: {e}")
         return False
-
-# Initialize session state for page navigation
-if 'current_page' not in st.session_state:
-    st.session_state.current_page = 'home'
 
 hide_streamlit_style = """
     <style>
@@ -238,7 +220,7 @@ elif current_page == 'enquiry':
             elif len(mobile) != 10 or not mobile.isdigit():
                 st.error("Please enter a valid 10-digit mobile number")
             else:
-                if save_enquiry_to_firebase(name, mobile, selected_apartment, num_people):
+                if save_enquiry(name, mobile, selected_apartment, num_people):
                     st.success("✅ Thank you for your enquiry! We have received your details and the owner will contact you shortly.")
                     st.info(f"""
                     **Enquiry Summary:**
@@ -248,9 +230,15 @@ elif current_page == 'enquiry':
                     - **Number of People:** {num_people}
                     - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
                     """)
+                    
+                    # Show total enquiries (optional)
+                    st.write(f"**Total enquiries received:** {len(st.session_state.enquiries)}")
                 else:
                     st.error("Failed to save enquiry. Please try again.")
 
+# Close the main-content div
 st.markdown("</div>", unsafe_allow_html=True)
+
+# Footer
 st.markdown("---")
 st.markdown("© 2024 Royal Sai Homes. All rights reserved.")
