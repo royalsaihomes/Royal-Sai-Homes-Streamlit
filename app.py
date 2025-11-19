@@ -33,78 +33,89 @@ hide_streamlit_style = """
         background: white;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         z-index: 1000;
-        padding: 15px 0;
+        padding: 10px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-left: 20px;
-        padding-right: 20px;
     }
     .nav-brand {
         font-size: 24px;
         font-weight: bold;
         color: #2c5aa0;
+        margin: 0;
     }
-    .nav-buttons {
+    .nav-buttons-container {
         display: flex;
-        gap: 20px;
-    }
-    .nav-button {
-        background: none;
-        border: 2px solid #2c5aa0;
-        color: #2c5aa0;
-        font-size: 16px;
-        cursor: pointer;
-        padding: 8px 20px;
-        border-radius: 25px;
-        transition: all 0.3s;
-        font-weight: 500;
-        text-decoration: none;
-    }
-    .nav-button:hover {
-        background: #2c5aa0;
-        color: white;
+        gap: 10px;
+        align-items: center;
     }
     .main-content {
-        margin-top: 80px;
+        margin-top: 70px;
+    }
+    
+    /* Custom button styles */
+    .nav-btn {
+        border: 2px solid #2c5aa0 !important;
+        color: #2c5aa0 !important;
+        background: white !important;
+        border-radius: 25px !important;
+        font-weight: 500 !important;
+        padding: 8px 20px !important;
+        font-size: 14px !important;
+        height: 40px !important;
+        margin: 0 !important;
+    }
+    .nav-btn:hover {
+        background: #2c5aa0 !important;
+        color: white !important;
     }
     </style>
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Simple navigation using JavaScript to update URL without page reload
+# Create the navigation bar using Streamlit layout
 st.markdown("""
 <div class="floating-nav">
     <div class="nav-brand">🏠 Royal Sai Homes</div>
-    <div class="nav-buttons">
-        <a href="javascript:void(0)" onclick="setPage('home')" class="nav-button">🏠 Home</a>
-        <a href="javascript:void(0)" onclick="setPage('gallery')" class="nav-button">📸 Gallery</a>
-        <a href="javascript:void(0)" onclick="setPage('enquiry')" class="nav-button">📝 Enquiry</a>
+    <div class="nav-buttons-container">
+""", unsafe_allow_html=True)
+
+# Create buttons using Streamlit - they will appear in the nav bar
+col1, col2, col3 = st.columns(3)
+with col1:
+    if st.button("🏠 Home", key="home", use_container_width=True):
+        st.session_state.current_page = 'home'
+with col2:
+    if st.button("📸 Gallery", key="gallery", use_container_width=True):
+        st.session_state.current_page = 'gallery'
+with col3:
+    if st.button("📝 Enquiry", key="enquiry", use_container_width=True):
+        st.session_state.current_page = 'enquiry'
+
+st.markdown("""
     </div>
 </div>
 <div class="main-content">
+""", unsafe_allow_html=True)
 
+# Apply custom styles to the buttons
+st.markdown("""
 <script>
-function setPage(page) {
-    // Update URL without page reload
-    window.history.pushState({}, '', '/?page=' + page);
-    // Trigger a Streamlit rerun
-    window.location.reload();
-}
+// Apply custom styles to navigation buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.stButton button');
+    buttons.forEach(button => {
+        if (button.textContent.includes('Home') || button.textContent.includes('Gallery') || button.textContent.includes('Enquiry')) {
+            button.classList.add('nav-btn');
+        }
+    });
+});
 </script>
 """, unsafe_allow_html=True)
 
-# Get current page from URL using standard approach
-try:
-    query_string = st.experimental_get_query_params()
-    current_page = query_string.get('page', ['home'])[0]
-    st.session_state.current_page = current_page
-except:
-    current_page = st.session_state.current_page
-
 # Page Content based on navigation
 if st.session_state.current_page == 'home':
-    # Your existing homepage content continues here...
+    # Your existing homepage content
     APARTMENT_DATA = {
         "name": "Royal Sai Homes",
         "address": "Doddathogur Panchayath Office, Doddathoguru, Electronic City Phase I, Electronic City, Bengaluru, Karnataka 560100",
@@ -120,7 +131,6 @@ if st.session_state.current_page == 'home':
         ]
     }
 
-    # Rest of your existing home page code...
     st.set_page_config(
         page_title="Royal Sai Homes",
         page_icon="🏠",
