@@ -47,9 +47,9 @@ hide_streamlit_style = """
     }
     .nav-buttons {
         display: flex;
-        gap: 20px;
+        gap: 15px;
     }
-    .nav-button {
+    .nav-btn {
         background: none;
         border: 2px solid #2c5aa0;
         color: #2c5aa0;
@@ -61,36 +61,58 @@ hide_streamlit_style = """
         font-weight: 500;
         text-decoration: none;
     }
-    .nav-button:hover {
+    .nav-btn:hover {
+        background: #2c5aa0;
+        color: white;
+    }
+    .nav-btn.active {
         background: #2c5aa0;
         color: white;
     }
     .main-content {
         margin-top: 80px;
     }
+    
+    /* Hide the default Streamlit elements */
+    .stButton > button {
+        width: 100%;
+    }
     </style>
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Simple navigation using URL parameters
+# Navigation using Streamlit columns and buttons
 st.markdown("""
 <div class="floating-nav">
     <div class="nav-brand">🏠 Royal Sai Homes</div>
     <div class="nav-buttons">
-        <a href="/?page=home" class="nav-button">🏠 Home</a>
-        <a href="/?page=gallery" class="nav-button">📸 Gallery</a>
-        <a href="/?page=enquiry" class="nav-button">📝 Enquiry</a>
+""", unsafe_allow_html=True)
+
+# Create navigation buttons
+col1, col2, col3 = st.columns(3)
+with col1:
+    home_clicked = st.button("🏠 Home", key="home_btn", use_container_width=True)
+with col2:
+    gallery_clicked = st.button("📸 Gallery", key="gallery_btn", use_container_width=True)
+with col3:
+    enquiry_clicked = st.button("📝 Enquiry", key="enquiry_btn", use_container_width=True)
+
+st.markdown("""
     </div>
 </div>
 <div class="main-content">
 """, unsafe_allow_html=True)
 
-# Get current page from URL
-query_params = st.experimental_get_query_params()
-current_page = query_params.get('page', ['home'])[0]
+# Handle button clicks
+if home_clicked:
+    st.session_state.current_page = 'home'
+if gallery_clicked:
+    st.session_state.current_page = 'gallery'
+if enquiry_clicked:
+    st.session_state.current_page = 'enquiry'
 
 # Page Content based on navigation
-if current_page == 'home':
+if st.session_state.current_page == 'home':
     # Your existing homepage content
     # Royal Sai Homes Data
     APARTMENT_DATA = {
@@ -171,12 +193,12 @@ if current_page == 'home':
         st.subheader("📧 Email")
         st.write(APARTMENT_DATA["email"])
 
-elif current_page == 'gallery':
+elif st.session_state.current_page == 'gallery':
     st.title("📸 Gallery")
     st.write("Gallery page coming soon...")
     # You can add images here later
     
-elif current_page == 'enquiry':
+elif st.session_state.current_page == 'enquiry':
     st.title("📝 Enquiry Form")
     st.write("Enquiry form coming soon...")
     # You can add a contact form here later
