@@ -24,7 +24,7 @@ hide_streamlit_style = """
     .stAppViewerBadge {display: none;}
     [data-testid="stAppViewContainer"] > .main {background-color: transparent;}
     
-    /* Floating Navigation Bar */
+    /* Floating Navigation Bar - FIXED POSITION */
     .floating-nav {
         position: fixed;
         top: 0;
@@ -32,13 +32,14 @@ hide_streamlit_style = """
         width: 100%;
         background: white;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        z-index: 1000;
-        padding: 15px 0;
+        z-index: 9999;
+        padding: 10px 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding-left: 20px;
         padding-right: 20px;
+        height: 60px;
     }
     .nav-brand {
         font-size: 24px;
@@ -47,13 +48,18 @@ hide_streamlit_style = """
     }
     .nav-buttons-container {
         display: flex;
-        gap: 15px;
+        gap: 10px;
+        align-items: center;
     }
     .main-content {
         margin-top: 80px;
     }
     
     /* Style the Streamlit buttons to look like navigation */
+    div[data-testid="column"] {
+        position: relative;
+        z-index: 10000 !important;
+    }
     .stButton > button {
         border: 2px solid #2c5aa0 !important;
         color: #2c5aa0 !important;
@@ -61,24 +67,33 @@ hide_streamlit_style = """
         border-radius: 25px !important;
         font-weight: 500 !important;
         transition: all 0.3s !important;
+        height: 40px !important;
+        position: relative !important;
+        z-index: 10000 !important;
     }
     .stButton > button:hover {
         background: #2c5aa0 !important;
         color: white !important;
         border-color: #2c5aa0 !important;
     }
+    
+    /* Ensure buttons are visible above the nav bar */
+    [data-testid="stHorizontalBlock"] {
+        position: relative;
+        z-index: 10000 !important;
+    }
     </style>
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Create the navigation bar with visible buttons
+# Create the navigation bar FIRST
 st.markdown("""
 <div class="floating-nav">
     <div class="nav-brand">🏠 Royal Sai Homes</div>
     <div class="nav-buttons-container">
 """, unsafe_allow_html=True)
 
-# Create navigation buttons that will be visible
+# Create navigation buttons - these will appear INSIDE the nav bar
 col1, col2, col3 = st.columns([1,1,1])
 with col1:
     home_clicked = st.button("🏠 Home", key="home_btn", use_container_width=True)
