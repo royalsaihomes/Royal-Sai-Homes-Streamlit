@@ -3,8 +3,6 @@ import streamlit as st
 # Initialize session state for page navigation
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 'home'
-if 'menu_open' not in st.session_state:
-    st.session_state.menu_open = False
 
 hide_streamlit_style = """
     <style>
@@ -35,99 +33,66 @@ hide_streamlit_style = """
         background: white;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         z-index: 1000;
-        padding: 15px 20px;
+        padding: 15px 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding-left: 20px;
+        padding-right: 20px;
     }
     .nav-brand {
         font-size: 24px;
         font-weight: bold;
         color: #2c5aa0;
     }
-    .hamburger-container {
+    .nav-buttons {
         display: flex;
-        align-items: center;
-        gap: 10px;
+        gap: 20px;
+    }
+    .nav-button {
+        background: none;
+        border: 2px solid #2c5aa0;
+        color: #2c5aa0;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 8px 20px;
+        border-radius: 25px;
+        transition: all 0.3s;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    .nav-button:hover {
+        background: #2c5aa0;
+        color: white;
     }
     .main-content {
         margin-top: 80px;
-    }
-    
-    /* Menu styles */
-    .menu-container {
-        position: fixed;
-        top: 70px;
-        right: 20px;
-        background: white;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        border-radius: 8px;
-        padding: 10px;
-        z-index: 1001;
-        min-width: 150px;
-    }
-    .menu-item {
-        display: block;
-        width: 100%;
-        padding: 12px 15px;
-        background: none;
-        border: none;
-        text-align: left;
-        cursor: pointer;
-        font-size: 16px;
-        color: #333;
-        border-radius: 5px;
-        margin-bottom: 5px;
-        transition: background 0.3s;
-    }
-    .menu-item:hover {
-        background: #f0f0f0;
     }
     </style>
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Floating Navigation Bar
+# Simple navigation using URL parameters
 st.markdown("""
 <div class="floating-nav">
     <div class="nav-brand">🏠 Royal Sai Homes</div>
-    <div class="hamburger-container">
-""", unsafe_allow_html=True)
-
-# Hamburger button using Streamlit
-col1, col2 = st.columns([3, 1])
-with col2:
-    if st.button("☰", key="hamburger"):
-        st.session_state.menu_open = not st.session_state.menu_open
-
-st.markdown("""
+    <div class="nav-buttons">
+        <a href="/?page=home" class="nav-button">🏠 Home</a>
+        <a href="/?page=gallery" class="nav-button">📸 Gallery</a>
+        <a href="/?page=enquiry" class="nav-button">📝 Enquiry</a>
     </div>
 </div>
 <div class="main-content">
 """, unsafe_allow_html=True)
 
-# Show menu if open
-if st.session_state.menu_open:
-    st.markdown("""
-    <div class="menu-container">
-        <button class="menu-item" onclick="window.location.href='/?page=home'">🏠 Home</button>
-        <button class="menu-item" onclick="window.location.href='/?page=gallery'">📸 Gallery</button>
-        <button class="menu-item" onclick="window.location.href='/?page=enquiry'">📝 Enquiry</button>
-    </div>
-    """, unsafe_allow_html=True)
-
-# Handle page navigation from URL parameters
-try:
-    query_params = st.experimental_get_query_params()
-    if 'page' in query_params:
-        st.session_state.current_page = query_params['page'][0]
-        st.session_state.menu_open = False  # Close menu on navigation
-except:
-    pass
+# Get current page from URL
+query_params = st.experimental_get_query_params()
+current_page = query_params.get('page', ['home'])[0]
 
 # Page Content based on navigation
-if st.session_state.current_page == 'home':
+if current_page == 'home':
     # Your existing homepage content
+    # Royal Sai Homes Data
     APARTMENT_DATA = {
         "name": "Royal Sai Homes",
         "address": "Doddathogur Panchayath Office, Doddathoguru, Electronic City Phase I, Electronic City, Bengaluru, Karnataka 560100",
@@ -143,6 +108,7 @@ if st.session_state.current_page == 'home':
         ]
     }
 
+    # Streamlit App
     st.set_page_config(
         page_title="Royal Sai Homes",
         page_icon="🏠",
@@ -205,13 +171,15 @@ if st.session_state.current_page == 'home':
         st.subheader("📧 Email")
         st.write(APARTMENT_DATA["email"])
 
-elif st.session_state.current_page == 'gallery':
+elif current_page == 'gallery':
     st.title("📸 Gallery")
     st.write("Gallery page coming soon...")
+    # You can add images here later
     
-elif st.session_state.current_page == 'enquiry':
+elif current_page == 'enquiry':
     st.title("📝 Enquiry Form")
     st.write("Enquiry form coming soon...")
+    # You can add a contact form here later
 
 # Close the main-content div
 st.markdown("</div>", unsafe_allow_html=True)
