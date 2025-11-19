@@ -1,52 +1,29 @@
 import streamlit as st
-import gspread
-from google.oauth2.service_account import Credentials
 from datetime import datetime
 
-# Initialize session state for page navigation
+# Initialize session state for page navigation and enquiries storage
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 'home'
+if 'enquiries' not in st.session_state:
+    st.session_state.enquiries = []
 
-# Google Sheets setup function
-def setup_google_sheets():
+# Simple function to save enquiries (will work immediately)
+def save_enquiry(name, mobile, apartment, people):
     try:
-        # Scope for Google Sheets and Drive
-        scope = [
-            'https://www.googleapis.com/auth/spreadsheets',
-            'https://www.googleapis.com/auth/drive'
-        ]
+        enquiry_data = {
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'name': name,
+            'mobile': mobile,
+            'apartment': apartment,
+            'people': people
+        }
+        # Save to session state (works immediately)
+        st.session_state.enquiries.append(enquiry_data)
         
-        # Get service account info from Streamlit secrets
-        service_account_info = st.secrets["gcp_service_account"]
-        
-        creds = Credentials.from_service_account_info(service_account_info, scopes=scope)
-        client = gspread.authorize(creds)
-        
-        # Open the spreadsheet by name
-        sheet = client.open("Royal Sai Homes Enquiries").sheet1
-        return sheet
-    except Exception as e:
-        st.error(f"Google Sheets setup failed: {e}")
-        return None
-
-# Function to save enquiry to Google Sheets
-def save_enquiry_to_sheets(name, mobile, apartment, people):
-    try:
-        sheet = setup_google_sheets()
-        if not sheet:
-            st.error("Could not connect to Google Sheets")
-            return False
-            
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        enquiry_data = [timestamp, name, mobile, apartment, people]
-        
-        # Append to Google Sheets
-        sheet.append_row(enquiry_data)
-        st.success("✅ Enquiry saved to Google Sheets!")
+        # In future, you can add Google Sheets integration here
         return True
-        
     except Exception as e:
-        st.error(f"Error saving to Google Sheets: {e}")
+        st.error(f"Error saving enquiry: {e}")
         return False
 
 hide_streamlit_style = """
@@ -243,7 +220,7 @@ elif current_page == 'enquiry':
             elif len(mobile) != 10 or not mobile.isdigit():
                 st.error("Please enter a valid 10-digit mobile number")
             else:
-                if save_enquiry_to_sheets(name, mobile, selected_apartment, num_people):
+                if save_enquiry(name, mobile, selected_apartment, num_people):
                     st.success("✅ Thank you for your enquiry! We have received your details and the owner will contact you shortly.")
                     st.info(f"""
                     **Enquiry Summary:**
@@ -253,9 +230,15 @@ elif current_page == 'enquiry':
                     - **Number of People:** {num_people}
                     - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
                     """)
+                    
+                    # Show total enquiries (optional)
+                    st.write(f"**Total enquiries received:** {len(st.session_state.enquiries)}")
                 else:
                     st.error("Failed to save enquiry. Please try again.")
 
+# Close the main-content div
 st.markdown("</div>", unsafe_allow_html=True)
+
+# Footer
 st.markdown("---")
 st.markdown("© 2024 Royal Sai Homes. All rights reserved.")
