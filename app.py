@@ -1,4 +1,44 @@
 import streamlit as st
+import pyrebase
+from datetime import datetime
+
+# === YOUR FIREBASE CONFIG ===
+firebase_config = {
+    "apiKey": "AIzaSyAPcETVnAOWJBzlnmwkgT_Mve98gWyYQwg",
+    "authDomain": "royal-sai-homes.firebaseapp.com",
+    "databaseURL": "https://royal-sai-homes-default-rtdb.firebaseio.com",
+    "projectId": "royal-sai-homes",
+    "storageBucket": "royal-sai-homes.firebasestorage.app",
+    "messagingSenderId": "713626045208",
+    "appId": "1:713626045208:web:635a0025a31b410fc6ec6d"
+}
+
+# Initialize Firebase
+try:
+    firebase = pyrebase.initialize_app(firebase_config)
+    db = firebase.database()
+    # st.success("✅ Connected to Firebase")  # Optional: remove comment to see connection status
+except Exception as e:
+    st.error(f"❌ Firebase connection failed: {e}")
+
+# Function to save enquiry to Firebase
+def save_enquiry_to_firebase(name, mobile, apartment, people):
+    try:
+        enquiry_data = {
+            'name': name,
+            'mobile': mobile,
+            'apartment': apartment,
+            'people': people,
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'status': 'new'
+        }
+        
+        # Save to Firebase Realtime Database
+        db.child("enquiries").push(enquiry_data)
+        return True
+    except Exception as e:
+        st.error(f"Error saving enquiry: {str(e)}")
+        return False
 
 # Initialize session state for page navigation
 if 'current_page' not in st.session_state:
@@ -92,7 +132,6 @@ current_page = query_params.get('page', ['home'])[0]
 # Page Content based on navigation
 if current_page == 'home':
     # Your existing homepage content
-    # Royal Sai Homes Data
     APARTMENT_DATA = {
         "name": "Royal Sai Homes",
         "address": "Doddathogur Panchayath Office, Doddathoguru, Electronic City Phase I, Electronic City, Bengaluru, Karnataka 560100",
@@ -108,12 +147,7 @@ if current_page == 'home':
         ]
     }
 
-    # Streamlit App
-    st.set_page_config(
-        page_title="Royal Sai Homes",
-        page_icon="🏠",
-        layout="wide"
-    )
+    st.set_page_config(page_title="Royal Sai Homes", page_icon="🏠", layout="wide")
 
     # Hero Section
     col1, col2 = st.columns([2, 1])
@@ -126,8 +160,6 @@ if current_page == 'home':
         st.image("https://i.ibb.co/dJWT4r7m/IMG-20241119-095319.jpg", use_column_width=True)
 
     st.markdown("---")
-
-    # Features Section
     st.header("🏘️ Apartment Facilities")
     features_cols = st.columns(2)
     for i, feature in enumerate(APARTMENT_DATA["features"]):
@@ -135,15 +167,12 @@ if current_page == 'home':
             st.markdown(f"✅ {feature}")
 
     st.markdown("---")
-
-    # Contact Section
     st.header("📞 Contact Information")
     contact_cols = st.columns(3)
 
     with contact_cols[0]:
         st.subheader("📍 Address")
         st.write(APARTMENT_DATA["address"])
-
         st.markdown("""
         <div style="margin-top: 15px;">
             <iframe 
@@ -174,7 +203,6 @@ if current_page == 'home':
 elif current_page == 'gallery':
     st.title("📸 Gallery")
     st.write("Gallery page coming soon...")
-    # You can add images here later
     
 elif current_page == 'enquiry':
     st.title("📝 Enquiry Form")
@@ -190,54 +218,39 @@ elif current_page == 'enquiry':
         with col2:
             mobile = st.text_input("Mobile Number *", placeholder="Enter your 10-digit mobile number")
         
-        # Apartment selection dropdown
         apartment_options = [
             "Select Apartment",
-            "GF1 - Ground Floor 1",
-            "GF2 - Ground Floor 2", 
-            "FF1 - First Floor 1",
-            "FF2 - First Floor 2",
-            "FF3 - First Floor 3",
-            "FF4 - First Floor 4",
-            "SF1 - Second Floor 1",
-            "SF2 - Second Floor 2",
-            "SF3 - Second Floor 3",
-            "SF4 - Second Floor 4"
+            "GF1 - Ground Floor 1", "GF2 - Ground Floor 2", 
+            "FF1 - First Floor 1", "FF2 - First Floor 2", "FF3 - First Floor 3", "FF4 - First Floor 4",
+            "SF1 - Second Floor 1", "SF2 - Second Floor 2", "SF3 - Second Floor 3", "SF4 - Second Floor 4"
         ]
         
         selected_apartment = st.selectbox("Preferred Apartment *", apartment_options)
         
-        # Number of people
         people_options = ["1", "2", "3", "4", "5", "6+"]
         num_people = st.selectbox("Number of People *", ["Select number"] + people_options)
         
-        # Submit button
         submitted = st.form_submit_button("Submit Enquiry", type="primary")
         
         if submitted:
-            # Basic validation
             if not name or not mobile or selected_apartment == "Select Apartment" or num_people == "Select number":
                 st.error("Please fill all required fields marked with *")
             elif len(mobile) != 10 or not mobile.isdigit():
                 st.error("Please enter a valid 10-digit mobile number")
             else:
-                # Success message
-                st.success("✅ Thank you for your enquiry! We have received your details and the owner will contact you shortly.")
-                
-                # Display submitted information
-                st.info(f"""
-                **Enquiry Summary:**
-                - **Name:** {name}
-                - **Mobile:** {mobile}
-                - **Preferred Apartment:** {selected_apartment}
-                - **Number of People:** {num_people}
-                """)
-                
-                # You can add code here to save to database or send email in the future
+                if save_enquiry_to_firebase(name, mobile, selected_apartment, num_people):
+                    st.success("✅ Thank you for your enquiry! We have received your details and the owner will contact you shortly.")
+                    st.info(f"""
+                    **Enquiry Summary:**
+                    - **Name:** {name}
+                    - **Mobile:** {mobile}
+                    - **Preferred Apartment:** {selected_apartment}
+                    - **Number of People:** {num_people}
+                    - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+                    """)
+                else:
+                    st.error("Failed to save enquiry. Please try again.")
 
-# Close the main-content div
 st.markdown("</div>", unsafe_allow_html=True)
-
-# Footer
 st.markdown("---")
 st.markdown("© 2024 Royal Sai Homes. All rights reserved.")
