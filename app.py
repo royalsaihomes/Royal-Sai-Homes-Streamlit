@@ -3,6 +3,8 @@ import streamlit as st
 # Initialize session state for page navigation
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 'home'
+if 'menu_open' not in st.session_state:
+    st.session_state.menu_open = False
 
 hide_streamlit_style = """
     <style>
@@ -33,7 +35,7 @@ hide_streamlit_style = """
         background: white;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         z-index: 1000;
-        padding: 10px 20px;
+        padding: 15px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -42,76 +44,112 @@ hide_streamlit_style = """
         font-size: 24px;
         font-weight: bold;
         color: #2c5aa0;
-        margin: 0;
     }
-    .nav-buttons-container {
-        display: flex;
-        gap: 10px;
-        align-items: center;
+    .hamburger-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #2c5aa0;
+        padding: 5px 10px;
     }
     .main-content {
-        margin-top: 70px;
+        margin-top: 80px;
     }
     
-    /* Custom button styles */
-    .nav-btn {
-        border: 2px solid #2c5aa0 !important;
-        color: #2c5aa0 !important;
-        background: white !important;
-        border-radius: 25px !important;
-        font-weight: 500 !important;
-        padding: 8px 20px !important;
-        font-size: 14px !important;
-        height: 40px !important;
-        margin: 0 !important;
+    /* Sidebar Menu */
+    .sidebar-menu {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 8px;
+        padding: 15px;
+        z-index: 1001;
+        min-width: 150px;
     }
-    .nav-btn:hover {
-        background: #2c5aa0 !important;
-        color: white !important;
+    .menu-item {
+        display: block;
+        width: 100%;
+        padding: 10px 15px;
+        background: none;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+        font-size: 16px;
+        color: #333;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+    .menu-item:hover {
+        background: #f0f0f0;
     }
     </style>
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Create the navigation bar using Streamlit layout
+# Floating Navigation Bar with Hamburger Menu
 st.markdown("""
 <div class="floating-nav">
     <div class="nav-brand">🏠 Royal Sai Homes</div>
-    <div class="nav-buttons-container">
-""", unsafe_allow_html=True)
-
-# Create buttons using Streamlit - they will appear in the nav bar
-col1, col2, col3 = st.columns(3)
-with col1:
-    if st.button("🏠 Home", key="home", use_container_width=True):
-        st.session_state.current_page = 'home'
-with col2:
-    if st.button("📸 Gallery", key="gallery", use_container_width=True):
-        st.session_state.current_page = 'gallery'
-with col3:
-    if st.button("📝 Enquiry", key="enquiry", use_container_width=True):
-        st.session_state.current_page = 'enquiry'
-
-st.markdown("""
-    </div>
+    <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
 </div>
 <div class="main-content">
 """, unsafe_allow_html=True)
 
-# Apply custom styles to the buttons
+# JavaScript to handle menu toggle
 st.markdown("""
 <script>
-// Apply custom styles to navigation buttons
-document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.stButton button');
-    buttons.forEach(button => {
-        if (button.textContent.includes('Home') || button.textContent.includes('Gallery') || button.textContent.includes('Enquiry')) {
-            button.classList.add('nav-btn');
-        }
-    });
+let menuOpen = false;
+
+function toggleMenu() {
+    menuOpen = !menuOpen;
+    const menu = document.getElementById('sidebar-menu');
+    if (menu) {
+        menu.style.display = menuOpen ? 'block' : 'none';
+    }
+}
+
+function setPage(page) {
+    // Close menu
+    menuOpen = false;
+    const menu = document.getElementById('sidebar-menu');
+    if (menu) {
+        menu.style.display = 'none';
+    }
+    // Navigate to page
+    window.location.href = '/?page=' + page;
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('sidebar-menu');
+    const hamburger = document.querySelector('.hamburger-btn');
+    if (menu && hamburger && !menu.contains(event.target) && !hamburger.contains(event.target)) {
+        menu.style.display = 'none';
+        menuOpen = false;
+    }
 });
 </script>
 """, unsafe_allow_html=True)
+
+# Sidebar Menu
+st.markdown("""
+<div id="sidebar-menu" class="sidebar-menu" style="display: none;">
+    <button class="menu-item" onclick="setPage('home')">🏠 Home</button>
+    <button class="menu-item" onclick="setPage('gallery')">📸 Gallery</button>
+    <button class="menu-item" onclick="setPage('enquiry')">📝 Enquiry</button>
+</div>
+""", unsafe_allow_html=True)
+
+# Handle page navigation from URL parameters
+try:
+    query_params = st.experimental_get_query_params()
+    if 'page' in query_params:
+        st.session_state.current_page = query_params['page'][0]
+except:
+    pass
 
 # Page Content based on navigation
 if st.session_state.current_page == 'home':
