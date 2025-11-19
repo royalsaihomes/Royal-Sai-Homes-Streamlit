@@ -24,7 +24,7 @@ hide_streamlit_style = """
     .stAppViewerBadge {display: none;}
     [data-testid="stAppViewContainer"] > .main {background-color: transparent;}
     
-    /* Floating Navigation Bar - FIXED POSITION */
+    /* Floating Navigation Bar */
     .floating-nav {
         position: fixed;
         top: 0;
@@ -32,94 +32,79 @@ hide_streamlit_style = """
         width: 100%;
         background: white;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        z-index: 9999;
-        padding: 10px 0;
+        z-index: 1000;
+        padding: 15px 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding-left: 20px;
         padding-right: 20px;
-        height: 60px;
     }
     .nav-brand {
         font-size: 24px;
         font-weight: bold;
         color: #2c5aa0;
     }
-    .nav-buttons-container {
+    .nav-buttons {
         display: flex;
-        gap: 10px;
-        align-items: center;
+        gap: 20px;
+    }
+    .nav-button {
+        background: none;
+        border: 2px solid #2c5aa0;
+        color: #2c5aa0;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 8px 20px;
+        border-radius: 25px;
+        transition: all 0.3s;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    .nav-button:hover {
+        background: #2c5aa0;
+        color: white;
     }
     .main-content {
         margin-top: 80px;
-    }
-    
-    /* Style the Streamlit buttons to look like navigation */
-    div[data-testid="column"] {
-        position: relative;
-        z-index: 10000 !important;
-    }
-    .stButton > button {
-        border: 2px solid #2c5aa0 !important;
-        color: #2c5aa0 !important;
-        background: white !important;
-        border-radius: 25px !important;
-        font-weight: 500 !important;
-        transition: all 0.3s !important;
-        height: 40px !important;
-        position: relative !important;
-        z-index: 10000 !important;
-    }
-    .stButton > button:hover {
-        background: #2c5aa0 !important;
-        color: white !important;
-        border-color: #2c5aa0 !important;
-    }
-    
-    /* Ensure buttons are visible above the nav bar */
-    [data-testid="stHorizontalBlock"] {
-        position: relative;
-        z-index: 10000 !important;
     }
     </style>
     """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Create the navigation bar FIRST
+# Simple navigation using JavaScript to update URL without page reload
 st.markdown("""
 <div class="floating-nav">
     <div class="nav-brand">🏠 Royal Sai Homes</div>
-    <div class="nav-buttons-container">
-""", unsafe_allow_html=True)
-
-# Create navigation buttons - these will appear INSIDE the nav bar
-col1, col2, col3 = st.columns([1,1,1])
-with col1:
-    home_clicked = st.button("🏠 Home", key="home_btn", use_container_width=True)
-with col2:
-    gallery_clicked = st.button("📸 Gallery", key="gallery_btn", use_container_width=True)
-with col3:
-    enquiry_clicked = st.button("📝 Enquiry", key="enquiry_btn", use_container_width=True)
-
-st.markdown("""
+    <div class="nav-buttons">
+        <a href="javascript:void(0)" onclick="setPage('home')" class="nav-button">🏠 Home</a>
+        <a href="javascript:void(0)" onclick="setPage('gallery')" class="nav-button">📸 Gallery</a>
+        <a href="javascript:void(0)" onclick="setPage('enquiry')" class="nav-button">📝 Enquiry</a>
     </div>
 </div>
 <div class="main-content">
+
+<script>
+function setPage(page) {
+    // Update URL without page reload
+    window.history.pushState({}, '', '/?page=' + page);
+    // Trigger a Streamlit rerun
+    window.location.reload();
+}
+</script>
 """, unsafe_allow_html=True)
 
-# Handle button clicks
-if home_clicked:
-    st.session_state.current_page = 'home'
-if gallery_clicked:
-    st.session_state.current_page = 'gallery'
-if enquiry_clicked:
-    st.session_state.current_page = 'enquiry'
+# Get current page from URL using standard approach
+try:
+    query_string = st.experimental_get_query_params()
+    current_page = query_string.get('page', ['home'])[0]
+    st.session_state.current_page = current_page
+except:
+    current_page = st.session_state.current_page
 
 # Page Content based on navigation
 if st.session_state.current_page == 'home':
-    # Your existing homepage content
-    # Royal Sai Homes Data
+    # Your existing homepage content continues here...
     APARTMENT_DATA = {
         "name": "Royal Sai Homes",
         "address": "Doddathogur Panchayath Office, Doddathoguru, Electronic City Phase I, Electronic City, Bengaluru, Karnataka 560100",
@@ -135,7 +120,7 @@ if st.session_state.current_page == 'home':
         ]
     }
 
-    # Streamlit App
+    # Rest of your existing home page code...
     st.set_page_config(
         page_title="Royal Sai Homes",
         page_icon="🏠",
@@ -201,12 +186,10 @@ if st.session_state.current_page == 'home':
 elif st.session_state.current_page == 'gallery':
     st.title("📸 Gallery")
     st.write("Gallery page coming soon...")
-    # You can add images here later
     
 elif st.session_state.current_page == 'enquiry':
     st.title("📝 Enquiry Form")
     st.write("Enquiry form coming soon...")
-    # You can add a contact form here later
 
 # Close the main-content div
 st.markdown("</div>", unsafe_allow_html=True)
