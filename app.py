@@ -178,8 +178,62 @@ elif current_page == 'gallery':
     
 elif current_page == 'enquiry':
     st.title("📝 Enquiry Form")
-    st.write("Enquiry form coming soon...")
-    # You can add a contact form here later
+    st.write("Interested in our apartments? Fill out the form below and we'll get back to you soon!")
+    
+    # Enquiry Form
+    with st.form("enquiry_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            name = st.text_input("Full Name *", placeholder="Enter your full name")
+        
+        with col2:
+            mobile = st.text_input("Mobile Number *", placeholder="Enter your 10-digit mobile number")
+        
+        # Apartment selection dropdown
+        apartment_options = [
+            "Select Apartment",
+            "GF1 - Ground Floor 1",
+            "GF2 - Ground Floor 2", 
+            "FF1 - First Floor 1",
+            "FF2 - First Floor 2",
+            "FF3 - First Floor 3",
+            "FF4 - First Floor 4",
+            "SF1 - Second Floor 1",
+            "SF2 - Second Floor 2",
+            "SF3 - Second Floor 3",
+            "SF4 - Second Floor 4"
+        ]
+        
+        selected_apartment = st.selectbox("Preferred Apartment *", apartment_options)
+        
+        # Number of people
+        people_options = ["1", "2", "3", "4", "5", "6+"]
+        num_people = st.selectbox("Number of People *", ["Select number"] + people_options)
+        
+        # Submit button
+        submitted = st.form_submit_button("Submit Enquiry", type="primary")
+        
+        if submitted:
+            # Basic validation
+            if not name or not mobile or selected_apartment == "Select Apartment" or num_people == "Select number":
+                st.error("Please fill all required fields marked with *")
+            elif len(mobile) != 10 or not mobile.isdigit():
+                st.error("Please enter a valid 10-digit mobile number")
+            else:
+                # Success message
+                st.success("✅ Thank you for your enquiry! We have received your details and the owner will contact you shortly.")
+                
+                # Display submitted information
+                st.info(f"""
+                **Enquiry Summary:**
+                - **Name:** {name}
+                - **Mobile:** {mobile}
+                - **Preferred Apartment:** {selected_apartment}
+                - **Number of People:** {num_people}
+                """)
+                
+                # You can add code here to save to database or send email in the future
 
 # Close the main-content div
 st.markdown("</div>", unsafe_allow_html=True)
