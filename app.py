@@ -15,7 +15,7 @@ EMAIL_CONFIG = {
     "smtp_server": "smtp.gmail.com",
     "smtp_port": 587,
     "sender_email": "royalsaihomes@gmail.com",  # Your Gmail address
-    "sender_password": "wxcx tmoj unbe hszd",  # Your Gmail App Password
+    "sender_password": st.secrets["email_password"],  # Your Gmail App Password
     "receiver_email": "royalsaihomes@gmail.com"  # Where to send notifications
 }
 
