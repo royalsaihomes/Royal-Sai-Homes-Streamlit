@@ -1,35 +1,11 @@
 import streamlit as st
 from datetime import datetime
-import gspread
-from google.oauth2.service_account import Credentials
 
 # Initialize session state for page navigation and enquiries storage
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 'home'
 if 'enquiries' not in st.session_state:
     st.session_state.enquiries = []
-
-# Google Sheets setup function
-def setup_google_sheets():
-    try:
-        # Scope for Google Sheets and Drive
-        scope = [
-            'https://www.googleapis.com/auth/spreadsheets',
-            'https://www.googleapis.com/auth/drive'
-        ]
-        
-        # Get service account info from Streamlit secrets
-        service_account_info = st.secrets["gcp_service_account"]
-        
-        creds = Credentials.from_service_account_info(service_account_info, scopes=scope)
-        client = gspread.authorize(creds)
-        
-        # Open the spreadsheet by name
-        sheet = client.open("Royal Sai Homes Enquiries").sheet1
-        return sheet
-    except Exception as e:
-        st.error(f"Google Sheets setup failed: {e}")
-        return None
 
 # Simple function to save enquiries (will work immediately)
 def save_enquiry(name, mobile, apartment, people):
@@ -44,21 +20,7 @@ def save_enquiry(name, mobile, apartment, people):
         # Save to session state (works immediately)
         st.session_state.enquiries.append(enquiry_data)
         
-        # Save to Google Sheets
-        sheet = setup_google_sheets()
-        if sheet:
-            # Prepare data for Google Sheets
-            sheet_data = [
-                enquiry_data['timestamp'],
-                enquiry_data['name'],
-                enquiry_data['mobile'],
-                enquiry_data['apartment'],
-                enquiry_data['people']
-            ]
-            # Append to Google Sheets
-            sheet.append_row(sheet_data)
-            st.success("✅ Enquiry saved to Google Sheets!")
-        
+        # In future, you can add Google Sheets integration here
         return True
     except Exception as e:
         st.error(f"Error saving enquiry: {e}")
@@ -279,4 +241,4 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
-st.markdown("© 2024 Royal Sai Homes. All rights reserved.")
+st.markdown("© 2024 Royal Sai Homes. All rights reserved.") 
