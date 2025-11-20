@@ -20,7 +20,7 @@ EMAIL_CONFIG = {
 }
 
 # Function to send email notification
-def send_email_notification(name, mobile, apartment, people):
+def send_email_notification(name, mobile, people):
     try:
         # Create message
         subject = f"🔔 New Enquiry - Royal Sai Homes"
@@ -29,7 +29,6 @@ def send_email_notification(name, mobile, apartment, people):
         
         👤 Name: {name}
         📞 Mobile: {mobile}
-        🏢 Apartment Type: {apartment}
         👥 Number of Occupants: {people}
         ⏰ Submitted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
         
@@ -59,13 +58,12 @@ def send_email_notification(name, mobile, apartment, people):
         return False
 
 # Simple function to save enquiries
-def save_enquiry(name, mobile, apartment, people):
+def save_enquiry(name, mobile, people):
     try:
         enquiry_data = {
             'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'name': name,
             'mobile': mobile,
-            'apartment': apartment,
             'people': people
         }
         
@@ -73,7 +71,7 @@ def save_enquiry(name, mobile, apartment, people):
         st.session_state.enquiries.append(enquiry_data)
         
         # Send email notification (silently - no message to user)
-        send_email_notification(name, mobile, apartment, people)
+        send_email_notification(name, mobile, people)
         
         return True
     except Exception as e:
@@ -260,15 +258,13 @@ elif current_page == 'enquiry':
             elif len(mobile) != 10 or not mobile.isdigit():
                 st.error("Please enter a valid 10-digit mobile number")
             else:
-                # Since apartment selection is removed, we'll use a default value
-                apartment_type = "Any Available Apartment"
-                if save_enquiry(name, mobile, apartment_type, num_people):
+                if save_enquiry(name, mobile, num_people):
                     st.success("✅ Thank you for your enquiry! We have received your details and the owner will contact you shortly.")
                     st.info(f"""
                     **Enquiry Summary:**
                     - **Name:** {name}
                     - **Mobile:** {mobile}
-                    - **Number of People staying :** {num_people}
+                    - **Number of People staying:** {num_people}
                     - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
                     """)
                 else:
