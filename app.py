@@ -241,4 +241,4 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
-st.markdown("© 2024 Royal Sai Homes. All rights reserved.")
+st.markdown("© 2024 Royal Sai Homes. All rights reserved.") 
