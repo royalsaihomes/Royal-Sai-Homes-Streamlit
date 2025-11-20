@@ -1,7 +1,5 @@
 import streamlit as st
 from datetime import datetime
-import gspread
-from google.oauth2.service_account import Credentials
 
 # Initialize session state for page navigation and enquiries storage
 if 'current_page' not in st.session_state:
@@ -9,43 +7,7 @@ if 'current_page' not in st.session_state:
 if 'enquiries' not in st.session_state:
     st.session_state.enquiries = []
 
-# Google Sheets setup function
-def setup_google_sheets():
-    try:
-        # Scope for Google Sheets and Drive
-        scope = [
-            'https://www.googleapis.com/auth/spreadsheets',
-            'https://www.googleapis.com/auth/drive'
-        ]
-        
-        # Debug: Check if secrets exist
-        if "gcp_service_account" not in st.secrets:
-            st.error("❌ Google Sheets secrets not found in Streamlit")
-            return None
-            
-        # Get service account info from Streamlit secrets
-        service_account_info = st.secrets["gcp_service_account"]
-        
-        # Debug: Check required fields
-        required_fields = ['private_key', 'client_email', 'project_id']
-        for field in required_fields:
-            if field not in service_account_info:
-                st.error(f"❌ Missing required field in secrets: {field}")
-                return None
-        
-        creds = Credentials.from_service_account_info(service_account_info, scopes=scope)
-        client = gspread.authorize(creds)
-        
-        # Open the spreadsheet by name
-        sheet = client.open("Royal Sai Homes Enquiries").sheet1
-        st.success("✅ Connected to Google Sheets successfully!")
-        return sheet
-        
-    except Exception as e:
-        st.error(f"❌ Google Sheets setup failed: {str(e)}")
-        return None
-
-# Simple function to save enquiries
+# Simple function to save enquiries (will work immediately)
 def save_enquiry(name, mobile, apartment, people):
     try:
         enquiry_data = {
@@ -55,41 +17,15 @@ def save_enquiry(name, mobile, apartment, people):
             'apartment': apartment,
             'people': people
         }
-        
         # Save to session state (works immediately)
         st.session_state.enquiries.append(enquiry_data)
-        st.success("✅ Saved to session state")
         
-        # Try to save to Google Sheets
-        sheet = setup_google_sheets()
-        if sheet:
-            try:
-                # Prepare data for Google Sheets
-                sheet_data = [
-                    enquiry_data['timestamp'],
-                    enquiry_data['name'], 
-                    enquiry_data['mobile'],
-                    enquiry_data['apartment'],
-                    enquiry_data['people']
-                ]
-                
-                # Debug: Show what we're trying to save
-                st.info(f"📝 Trying to save: {sheet_data}")
-                
-                # Append to Google Sheets
-                sheet.append_row(sheet_data)
-                st.success("✅ Successfully saved to Google Sheets!")
-                
-            except Exception as sheet_error:
-                st.error(f"❌ Failed to save to Google Sheets: {str(sheet_error)}")
-                return False
-        else:
-            st.warning("⚠️ Google Sheets not available, but enquiry saved locally")
-            
+        # Show success message
+        st.success("✅ Enquiry saved successfully!")
+        
         return True
-        
     except Exception as e:
-        st.error(f"❌ Error saving enquiry: {str(e)}")
+        st.error(f"Error saving enquiry: {e}")
         return False
 
 hide_streamlit_style = """
@@ -297,8 +233,13 @@ elif current_page == 'enquiry':
                     - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
                     """)
                     
-                    # Show total enquiries (optional)
+                    # Show total enquiries
                     st.write(f"**Total enquiries received:** {len(st.session_state.enquiries)}")
+                    
+                    # Show all stored enquiries (for testing)
+                    with st.expander("📋 View All Stored Enquiries"):
+                        for i, enquiry in enumerate(st.session_state.enquiries, 1):
+                            st.write(f"**Enquiry {i}:** {enquiry}")
                 else:
                     st.error("Failed to save enquiry. Please try again.")
 
