@@ -14,8 +14,8 @@ if 'enquiries' not in st.session_state:
 EMAIL_CONFIG = {
     "smtp_server": "smtp.gmail.com",
     "smtp_port": 587,
-    "sender_email": "dhruvase06@gmail.com",  # Your Gmail address
-    "sender_password": "ggmf jhxp ftoh lcyb",  # Your Gmail App Password
+    "sender_email": "royalsaihomes@gmail.com",  # Your Gmail address
+    "sender_password": "wxcx tmoj unbe hszd",  # Your Gmail App Password
     "receiver_email": "royalsaihomes@gmail.com"  # Where to send notifications
 }
 
@@ -56,7 +56,6 @@ def send_email_notification(name, mobile, apartment, people):
         
         return True
     except Exception as e:
-        st.error(f"Email notification failed: {e}")
         return False
 
 # Simple function to save enquiries
@@ -73,14 +72,11 @@ def save_enquiry(name, mobile, apartment, people):
         # Save to session state
         st.session_state.enquiries.append(enquiry_data)
         
-        # Send email notification
-        email_sent = send_email_notification(name, mobile, apartment, people)
-        if email_sent:
-            st.success("📧 Email notification sent!")
+        # Send email notification (silently - no message to user)
+        send_email_notification(name, mobile, apartment, people)
         
         return True
     except Exception as e:
-        st.error(f"Error saving enquiry: {e}")
         return False
 
 hide_streamlit_style = """
@@ -94,7 +90,7 @@ hide_streamlit_style = """
     .viewerBadge_container__1QSob {display: none !important;}
 
     /* Hide streamlit branding */
-    #root > div:nth-child(1) > div > div > div > div > section >div {padding-top: 0rem;}
+    #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 0rem;}
     
     /* Remove extra padding */
     .block-container {padding-top: 1rem;}
@@ -287,9 +283,6 @@ elif current_page == 'enquiry':
                     - **Number of People:** {num_people}
                     - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
                     """)
-                    
-                    # Show total enquiries (optional)
-                    st.write(f"**Total enquiries received:** {len(st.session_state.enquiries)}")
                 else:
                     st.error("Failed to save enquiry. Please try again.")
 
