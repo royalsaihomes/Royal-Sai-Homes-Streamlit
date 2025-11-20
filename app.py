@@ -18,20 +18,34 @@ def setup_google_sheets():
             'https://www.googleapis.com/auth/drive'
         ]
         
+        # Debug: Check if secrets exist
+        if "gcp_service_account" not in st.secrets:
+            st.error("❌ Google Sheets secrets not found in Streamlit")
+            return None
+            
         # Get service account info from Streamlit secrets
         service_account_info = st.secrets["gcp_service_account"]
+        
+        # Debug: Check required fields
+        required_fields = ['private_key', 'client_email', 'project_id']
+        for field in required_fields:
+            if field not in service_account_info:
+                st.error(f"❌ Missing required field in secrets: {field}")
+                return None
         
         creds = Credentials.from_service_account_info(service_account_info, scopes=scope)
         client = gspread.authorize(creds)
         
         # Open the spreadsheet by name
         sheet = client.open("Royal Sai Homes Enquiries").sheet1
+        st.success("✅ Connected to Google Sheets successfully!")
         return sheet
+        
     except Exception as e:
-        st.error(f"Google Sheets setup failed: {e}")
+        st.error(f"❌ Google Sheets setup failed: {str(e)}")
         return None
 
-# Simple function to save enquiries (will work immediately)
+# Simple function to save enquiries
 def save_enquiry(name, mobile, apartment, people):
     try:
         enquiry_data = {
@@ -41,27 +55,41 @@ def save_enquiry(name, mobile, apartment, people):
             'apartment': apartment,
             'people': people
         }
+        
         # Save to session state (works immediately)
         st.session_state.enquiries.append(enquiry_data)
+        st.success("✅ Saved to session state")
         
-        # Save to Google Sheets
+        # Try to save to Google Sheets
         sheet = setup_google_sheets()
         if sheet:
-            # Prepare data for Google Sheets
-            sheet_data = [
-                enquiry_data['timestamp'],
-                enquiry_data['name'],
-                enquiry_data['mobile'],
-                enquiry_data['apartment'],
-                enquiry_data['people']
-            ]
-            # Append to Google Sheets
-            sheet.append_row(sheet_data)
-            st.success("✅ Enquiry saved to Google Sheets!")
-        
+            try:
+                # Prepare data for Google Sheets
+                sheet_data = [
+                    enquiry_data['timestamp'],
+                    enquiry_data['name'], 
+                    enquiry_data['mobile'],
+                    enquiry_data['apartment'],
+                    enquiry_data['people']
+                ]
+                
+                # Debug: Show what we're trying to save
+                st.info(f"📝 Trying to save: {sheet_data}")
+                
+                # Append to Google Sheets
+                sheet.append_row(sheet_data)
+                st.success("✅ Successfully saved to Google Sheets!")
+                
+            except Exception as sheet_error:
+                st.error(f"❌ Failed to save to Google Sheets: {str(sheet_error)}")
+                return False
+        else:
+            st.warning("⚠️ Google Sheets not available, but enquiry saved locally")
+            
         return True
+        
     except Exception as e:
-        st.error(f"Error saving enquiry: {e}")
+        st.error(f"❌ Error saving enquiry: {str(e)}")
         return False
 
 hide_streamlit_style = """
