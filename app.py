@@ -30,7 +30,7 @@ def send_email_notification(name, mobile, apartment, people):
         👤 Name: {name}
         📞 Mobile: {mobile}
         🏢 Apartment Type: {apartment}
-        👥 Number of People: {people}
+        👥 Number of Occupants: {people}
         ⏰ Submitted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
         
         Please contact them soon!
@@ -170,7 +170,6 @@ if current_page == 'home':
     APARTMENT_DATA = {
         "name": "Royal Sai Homes",
         "address": "Doddathogur Panchayath Office, Doddathoguru, Electronic City Phase I, Electronic City, Bengaluru, Karnataka 560100",
-        "email": "royalsaihomes@gmail.com",
         "description": "Premium rental apartments in the heart of Electronic City, Bengaluru. Experience comfortable living with modern amenities and excellent connectivity to IT hubs, schools, and shopping centers.",
         "features": [
             "Semi / Fully Furnished Apartments",
@@ -231,10 +230,6 @@ if current_page == 'home':
         </div>
         """, unsafe_allow_html=True)
 
-    with contact_cols[2]:
-        st.subheader("📧 Email")
-        st.write(APARTMENT_DATA["email"])
-
 elif current_page == 'gallery':
     st.title("📸 Gallery")
     st.write("Gallery page coming soon...")
@@ -255,7 +250,7 @@ elif current_page == 'enquiry':
         
         # Number of people
         people_options = ["1", "2", "3", "4", "5", "6+"]
-        num_people = st.selectbox("Number of People *", ["Select number"] + people_options)
+        num_people = st.selectbox("Number of Occupants*", ["Select number"] + people_options)
         
         submitted = st.form_submit_button("Submit Enquiry", type="primary")
         
@@ -273,7 +268,7 @@ elif current_page == 'enquiry':
                     **Enquiry Summary:**
                     - **Name:** {name}
                     - **Mobile:** {mobile}
-                    - **Number of People:** {num_people}
+                    - **Number of People staying :** {num_people}
                     - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
                     """)
                 else:
