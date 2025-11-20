@@ -29,7 +29,7 @@ def send_email_notification(name, mobile, apartment, people):
         
         👤 Name: {name}
         📞 Mobile: {mobile}
-        🏢 Preferred Apartment: {apartment}
+        🏢 Apartment Type: {apartment}
         👥 Number of People: {people}
         ⏰ Submitted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
         
@@ -253,33 +253,26 @@ elif current_page == 'enquiry':
         with col2:
             mobile = st.text_input("Mobile Number *", placeholder="Enter your 10-digit mobile number")
         
-        apartment_options = [
-            "Select Apartment",
-            "GF1 - Ground Floor 1", "GF2 - Ground Floor 2", 
-            "FF1 - First Floor 1", "FF2 - First Floor 2", "FF3 - First Floor 3", "FF4 - First Floor 4",
-            "SF1 - Second Floor 1", "SF2 - Second Floor 2", "SF3 - Second Floor 3", "SF4 - Second Floor 4"
-        ]
-        
-        selected_apartment = st.selectbox("Preferred Apartment *", apartment_options)
-        
+        # Number of people
         people_options = ["1", "2", "3", "4", "5", "6+"]
         num_people = st.selectbox("Number of People *", ["Select number"] + people_options)
         
         submitted = st.form_submit_button("Submit Enquiry", type="primary")
         
         if submitted:
-            if not name or not mobile or selected_apartment == "Select Apartment" or num_people == "Select number":
+            if not name or not mobile or num_people == "Select number":
                 st.error("Please fill all required fields marked with *")
             elif len(mobile) != 10 or not mobile.isdigit():
                 st.error("Please enter a valid 10-digit mobile number")
             else:
-                if save_enquiry(name, mobile, selected_apartment, num_people):
+                # Since apartment selection is removed, we'll use a default value
+                apartment_type = "Any Available Apartment"
+                if save_enquiry(name, mobile, apartment_type, num_people):
                     st.success("✅ Thank you for your enquiry! We have received your details and the owner will contact you shortly.")
                     st.info(f"""
                     **Enquiry Summary:**
                     - **Name:** {name}
                     - **Mobile:** {mobile}
-                    - **Preferred Apartment:** {selected_apartment}
                     - **Number of People:** {num_people}
                     - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
                     """)
