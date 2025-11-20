@@ -1,5 +1,8 @@
 import streamlit as st
 from datetime import datetime
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Initialize session state for page navigation and enquiries storage
 if 'current_page' not in st.session_state:
@@ -7,7 +10,56 @@ if 'current_page' not in st.session_state:
 if 'enquiries' not in st.session_state:
     st.session_state.enquiries = []
 
-# Simple function to save enquiries (will work immediately)
+# Email configuration - UPDATE THESE WITH YOUR DETAILS
+EMAIL_CONFIG = {
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 587,
+    "sender_email": "dhruvase06@gmail.com",  # Your Gmail address
+    "sender_password": "ggmf jhxp ftoh lcyb",  # Your Gmail App Password
+    "receiver_email": "royalsaihomes@gmail.com"  # Where to send notifications
+}
+
+# Function to send email notification
+def send_email_notification(name, mobile, apartment, people):
+    try:
+        # Create message
+        subject = f"🔔 New Enquiry - Royal Sai Homes"
+        body = f"""
+        NEW ENQUIRY RECEIVED:
+        
+        👤 Name: {name}
+        📞 Mobile: {mobile}
+        🏢 Preferred Apartment: {apartment}
+        👥 Number of People: {people}
+        ⏰ Submitted: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        
+        Please contact them soon!
+        
+        ---
+        Royal Sai Homes
+        Electronic City, Bengaluru
+        """
+        
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_CONFIG["sender_email"]
+        msg['To'] = EMAIL_CONFIG["receiver_email"]
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Send email
+        server = smtplib.SMTP(EMAIL_CONFIG["smtp_server"], EMAIL_CONFIG["smtp_port"])
+        server.starttls()
+        server.login(EMAIL_CONFIG["sender_email"], EMAIL_CONFIG["sender_password"])
+        text = msg.as_string()
+        server.sendmail(EMAIL_CONFIG["sender_email"], EMAIL_CONFIG["receiver_email"], text)
+        server.quit()
+        
+        return True
+    except Exception as e:
+        st.error(f"Email notification failed: {e}")
+        return False
+
+# Simple function to save enquiries
 def save_enquiry(name, mobile, apartment, people):
     try:
         enquiry_data = {
@@ -17,10 +69,15 @@ def save_enquiry(name, mobile, apartment, people):
             'apartment': apartment,
             'people': people
         }
-        # Save to session state (works immediately)
+        
+        # Save to session state
         st.session_state.enquiries.append(enquiry_data)
         
-        # In future, you can add Google Sheets integration here
+        # Send email notification
+        email_sent = send_email_notification(name, mobile, apartment, people)
+        if email_sent:
+            st.success("📧 Email notification sent!")
+        
         return True
     except Exception as e:
         st.error(f"Error saving enquiry: {e}")
@@ -37,7 +94,7 @@ hide_streamlit_style = """
     .viewerBadge_container__1QSob {display: none !important;}
 
     /* Hide streamlit branding */
-    #root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 0rem;}
+    #root > div:nth-child(1) > div > div > div > div > section >div {padding-top: 0rem;}
     
     /* Remove extra padding */
     .block-container {padding-top: 1rem;}
@@ -241,4 +298,4 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
-st.markdown("© 2024 Royal Sai Homes. All rights reserved.") 
+st.markdown("© 2024 Royal Sai Homes. All rights reserved.")
