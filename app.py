@@ -12,11 +12,6 @@ if 'enquiries' not in st.session_state:
 # Google Sheets setup function
 def setup_google_sheets():
     try:
-        # Check if secrets exist
-        if "gcp_service_account" not in st.secrets:
-            st.error("❌ Google Sheets configuration missing")
-            return None
-            
         # Scope for Google Sheets and Drive
         scope = [
             'https://www.googleapis.com/auth/spreadsheets',
@@ -32,36 +27,11 @@ def setup_google_sheets():
         # Open the spreadsheet by name
         sheet = client.open("Royal Sai Homes Enquiries").sheet1
         return sheet
-        
     except Exception as e:
-        st.error(f"❌ Google Sheets connection failed: {str(e)}")
+        st.error(f"Google Sheets setup failed: {e}")
         return None
 
-# Function to save enquiry to Google Sheets
-def save_to_google_sheets(enquiry_data):
-    try:
-        sheet = setup_google_sheets()
-        if not sheet:
-            return False
-            
-        # Prepare data for Google Sheets
-        sheet_data = [
-            enquiry_data['timestamp'],
-            enquiry_data['name'], 
-            enquiry_data['mobile'],
-            enquiry_data['apartment'],
-            enquiry_data['people']
-        ]
-        
-        # Append to Google Sheets
-        sheet.append_row(sheet_data)
-        return True
-        
-    except Exception as e:
-        st.error(f"❌ Failed to save to Google Sheets: {str(e)}")
-        return False
-
-# Simple function to save enquiries
+# Simple function to save enquiries (will work immediately)
 def save_enquiry(name, mobile, apartment, people):
     try:
         enquiry_data = {
@@ -71,19 +41,25 @@ def save_enquiry(name, mobile, apartment, people):
             'apartment': apartment,
             'people': people
         }
-        
         # Save to session state (works immediately)
         st.session_state.enquiries.append(enquiry_data)
-        st.success("✅ Saved to local storage")
         
-        # Try to save to Google Sheets
-        if save_to_google_sheets(enquiry_data):
-            st.success("✅ Successfully saved to Google Sheets!")
-        else:
-            st.warning("⚠️ Saved locally only - Google Sheets not available")
+        # Save to Google Sheets
+        sheet = setup_google_sheets()
+        if sheet:
+            # Prepare data for Google Sheets
+            sheet_data = [
+                enquiry_data['timestamp'],
+                enquiry_data['name'],
+                enquiry_data['mobile'],
+                enquiry_data['apartment'],
+                enquiry_data['people']
+            ]
+            # Append to Google Sheets
+            sheet.append_row(sheet_data)
+            st.success("✅ Enquiry saved to Google Sheets!")
         
         return True
-        
     except Exception as e:
         st.error(f"Error saving enquiry: {e}")
         return False
@@ -293,13 +269,8 @@ elif current_page == 'enquiry':
                     - **Submitted at:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
                     """)
                     
-                    # Show total enquiries
+                    # Show total enquiries (optional)
                     st.write(f"**Total enquiries received:** {len(st.session_state.enquiries)}")
-                    
-                    # Show all stored enquiries (for testing)
-                    with st.expander("📋 View All Stored Enquiries"):
-                        for i, enquiry in enumerate(st.session_state.enquiries, 1):
-                            st.write(f"**Enquiry {i}:** {enquiry}")
                 else:
                     st.error("Failed to save enquiry. Please try again.")
 
