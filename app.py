@@ -200,10 +200,9 @@ if current_page == 'home':
 
     st.markdown("---")
 
-    with contact_cols[0]:
-        st.subheader("📍 Address")
-        st.write(APARTMENT_DATA["address"])
-        st.markdown("""
+    st.subheader("📍 Address")
+    st.write(APARTMENT_DATA["address"])
+    st.markdown("""
         <div style="margin-top: 15px;">
             <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d124475.28213937675!2d77.51207470893863!3d12.852797488383718!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae6c9e5e214983%3A0xf8a48b8d4d32ceb8!2sRoyal%20Sai%20Homes!5e0!3m2!1sen!2sin!4v1763478730572!5m2!1sen!2sin" 
