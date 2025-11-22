@@ -215,7 +215,7 @@ if current_page == 'home':
             </iframe>
         </div>
         """, unsafe_allow_html=True)
-        st.markdown("""
+    st.markdown("""
         <div style="margin-top: 10px;">
             <a href="https://www.google.com/maps/dir/?api=1&destination=Royal+Sai+Homes,+Doddathogur+Panchayath+Office,+Doddathoguru,+Electronic+City+Phase+I,+Electronic+City,+Bengaluru,+Karnataka+560100" 
                target="_blank" 
