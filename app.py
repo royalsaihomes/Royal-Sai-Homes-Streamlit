@@ -199,8 +199,6 @@ if current_page == 'home':
             st.markdown(f"✅ {feature}")
 
     st.markdown("---")
-    st.header("📞 Contact Information")
-    contact_cols = st.columns(3)
 
     with contact_cols[0]:
         st.subheader("📍 Address")
