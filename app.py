@@ -3,6 +3,7 @@ from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from PIL import Image
 
 # Initialize session state for page navigation and enquiries storage
 if 'current_page' not in st.session_state:
@@ -17,7 +18,7 @@ EMAIL_CONFIG = {
     "sender_email": "royalsaihomes@gmail.com",  # Your Gmail address
     "sender_password": st.secrets["email_password"],  # Your Gmail App Password
     "receiver_email": "royalsaihomes@gmail.com"  # Where to send notifications
-}
+}0
 
 # Function to send email notification
 def send_email_notification(name, mobile, people):
@@ -227,7 +228,9 @@ if current_page == 'home':
 
 elif current_page == 'gallery':
     st.title("📸 Gallery")
-    st.write("Gallery page coming soon...")
+    img = Image.open("Dodda Thogur - Royal Sai Homes - Building.webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
+
     
 elif current_page == 'enquiry':
     st.title("📝 Enquiry Form")
