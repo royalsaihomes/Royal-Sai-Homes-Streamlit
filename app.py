@@ -5,6 +5,12 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from PIL import Image
 
+st.set_page_config(
+    page_title="Royal Sai Homes",      # Browser tab title
+    page_icon="🏠",                    # Optional favicon
+    layout="wide"                      # Optional
+)
+
 # Initialize session state for page navigation and enquiries storage
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 'home'
@@ -162,12 +168,6 @@ st.markdown("""
 # Get current page from URL
 query_params = st.experimental_get_query_params()
 current_page = query_params.get('page', ['home'])[0]
-
-st.set_page_config(
-    page_title="Royal Sai Homes",      # Browser tab title
-    page_icon="🏠",                    # Optional favicon
-    layout="wide"                      # Optional
-)
 
 # Page Content based on navigation
 if current_page == 'home':
