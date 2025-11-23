@@ -228,8 +228,15 @@ if current_page == 'home':
 
 elif current_page == 'gallery':
     st.title("📸 Gallery")
+    st.write("Explore our beautiful apartments from the below gallery!!")
     img = Image.open("Dodda Thogur - Royal Sai Homes - Building.webp")   # same file name as uploaded
     st.image(img, use_column_width=True)
+    img = Image.open("unnamed.webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
+    img = Image.open("unnamed(1).webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
+
+
 
     
 elif current_page == 'enquiry':
