@@ -163,6 +163,12 @@ st.markdown("""
 query_params = st.experimental_get_query_params()
 current_page = query_params.get('page', ['home'])[0]
 
+st.set_page_config(
+    page_title="Royal Sai Homes",      # Browser tab title
+    page_icon="🏠",                    # Optional favicon
+    layout="wide"                      # Optional
+)
+
 # Page Content based on navigation
 if current_page == 'home':
     # Your existing homepage content
