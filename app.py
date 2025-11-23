@@ -233,10 +233,20 @@ elif current_page == 'gallery':
     st.image(img, use_column_width=True)
     img = Image.open("unnamed.webp")   # same file name as uploaded
     st.image(img, use_column_width=True)
-    img = Image.open("unnamed(1).webp")   # same file name as uploaded
+    img = Image.open("unnamed (1).webp")   # same file name as uploaded
     st.image(img, use_column_width=True)
-
-
+    img = Image.open("unnamed (2).webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
+    img = Image.open("unnamed (3).webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
+    img = Image.open("unnamed (4).webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
+    img = Image.open("unnamed (5).webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
+    img = Image.open("unnamed (6).webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
+    img = Image.open("unnamed (7).webp")   # same file name as uploaded
+    st.image(img, use_column_width=True)
 
     
 elif current_page == 'enquiry':
