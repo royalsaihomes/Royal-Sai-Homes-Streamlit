@@ -226,7 +226,6 @@ if current_page == 'home':
         </div>
         """, unsafe_allow_html=True)
 
-
 elif current_page == 'gallery':
     st.title("📸 Gallery")
     st.write("Explore our beautiful apartments from the gallery below!")
@@ -243,27 +242,19 @@ elif current_page == 'gallery':
         "unnamed (7).webp"
     ]
 
-    TARGET_HEIGHT = 400   # you can increase/decrease this
+    TARGET_HEIGHT = 300   # adjust this to make all same height
 
-    def resize_to_height(img, height):
-        w, h = img.size
-        new_width = int((w / h) * height)
-        return img.resize((new_width, height))
-
-    # Display 2 images per row with equal height
     for i in range(0, len(image_files), 2):
         cols = st.columns(2)
 
         # First image
         img1 = Image.open(image_files[i])
-        img1 = resize_to_height(img1, TARGET_HEIGHT)
-        cols[0].image(img1, use_column_width=True)
+        cols[0].image(img1, caption="", width=None, height=TARGET_HEIGHT)
 
-        # Second image (if exists)
+        # Second image (only if exists)
         if i + 1 < len(image_files):
             img2 = Image.open(image_files[i + 1])
-            img2 = resize_to_height(img2, TARGET_HEIGHT)
-            cols[1].image(img2, use_column_width=True)
+            cols[1].image(img2, caption="", width=None, height=TARGET_HEIGHT)
     
 elif current_page == 'enquiry':
     st.title("📝 Enquiry Form")
