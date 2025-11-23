@@ -228,26 +228,32 @@ if current_page == 'home':
 
 elif current_page == 'gallery':
     st.title("📸 Gallery")
-    st.write("Explore our beautiful apartments from the below gallery!!")
-    img = Image.open("Dodda Thogur - Royal Sai Homes - Building.webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
-    img = Image.open("unnamed.webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
-    img = Image.open("unnamed (1).webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
-    img = Image.open("unnamed (2).webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
-    img = Image.open("unnamed (3).webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
-    img = Image.open("unnamed (4).webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
-    img = Image.open("unnamed (5).webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
-    img = Image.open("unnamed (6).webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
-    img = Image.open("unnamed (7).webp")   # same file name as uploaded
-    st.image(img, use_column_width=True)
+    st.write("Explore our beautiful apartments from the gallery below!")
 
+    image_files = [
+        "Dodda Thogur - Royal Sai Homes - Building.webp",
+        "unnamed.webp",
+        "unnamed (1).webp",
+        "unnamed (2).webp",
+        "unnamed (3).webp",
+        "unnamed (4).webp",
+        "unnamed (5).webp",
+        "unnamed (6).webp",
+        "unnamed (7).webp"
+    ]
+
+    # Display 2 images per row
+    for i in range(0, len(image_files), 2):
+        cols = st.columns(2)
+        
+        # First image
+        img1 = Image.open(image_files[i])
+        cols[0].image(img1, use_column_width=True)
+
+        # Second image (only if exists)
+        if i + 1 < len(image_files):
+            img2 = Image.open(image_files[i + 1])
+            cols[1].image(img2, use_column_width=True)
     
 elif current_page == 'enquiry':
     st.title("📝 Enquiry Form")
