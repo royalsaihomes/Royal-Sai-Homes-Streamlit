@@ -18,7 +18,7 @@ EMAIL_CONFIG = {
     "sender_email": "royalsaihomes@gmail.com",  # Your Gmail address
     "sender_password": st.secrets["email_password"],  # Your Gmail App Password
     "receiver_email": "royalsaihomes@gmail.com"  # Where to send notifications
-}0
+}
 
 # Function to send email notification
 def send_email_notification(name, mobile, people):
