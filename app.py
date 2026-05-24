@@ -166,8 +166,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Get current page from URL
-query_params = st.experimental_get_query_params()
-current_page = query_params.get('page', ['home'])[0]
+query_params = st.query_params
+current_page = query_params.get("page", "home")
 
 # Page Content based on navigation
 if current_page == 'home':
